@@ -94,7 +94,7 @@ type ValidationFailures
 
 validateForm : Model -> List ValidationFailures
 validateForm model =
-    [] ++ validateLength model ++ validateMatching model
+    [] ++ validateLength model ++ validateMatching model ++ validationUppercase model ++ validationLowercase model ++ validationDigits model
 
 
 validateLength model =
@@ -111,6 +111,27 @@ validateMatching model =
         []
 
 
+validationUppercase model =
+    if not (String.any isUpper model.password) then
+        [ NoUpperCase ]
+    else
+        []
+
+
+validationLowercase model =
+    if not (String.any isLower model.password) then
+        [ NoLowerCase ]
+    else
+        []
+
+
+validationDigits model =
+    if not (String.any isDigit model.password) then
+        [ NoDigits ]
+    else
+        []
+
+
 validationMessage : ValidationFailures -> ( String, String )
 validationMessage error =
     case error of
@@ -121,10 +142,10 @@ validationMessage error =
             ( "red", "Passwords do not match" )
 
         NoUpperCase ->
-            ( "", "" )
+            ( "red", "Must contain at least one uppercase" )
 
         NoLowerCase ->
-            ( "", "" )
+            ( "red", "Must contain at least one lowercase" )
 
         NoDigits ->
-            ( "", "" )
+            ( "red", "Must contain at least one digit" )
